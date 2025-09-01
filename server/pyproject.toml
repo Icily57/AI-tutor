@@ -1,0 +1,25 @@
+name = "ai-tutor-server"
+version = "0.1.0"
+description = "FastAPI backend for Personalized AI Tutor"
+requires-python = ">=3.10"
+
+
+[project.dependencies]
+fastapi = "^0.115.0"
+uvicorn = {extras=["standard"], version="^0.30.0"}
+python-dotenv = "^1.0.1"
+sqlalchemy = "^2.0.32"
+asyncpg = "^0.29.0"
+psycopg-binary = "^3.2.1"
+passlib = {version = "^1.7.4", extras=["bcrypt"]}
+python-jose = {version = "^3.3.0", extras=["cryptography"]}
+pydantic = "^2.8.2"
+httpx = "^0.27.2"
+# Gemini SDK (Google Generative AI) – adjust if your environment uses a newer package name
+google-generativeai = "^0.8.3"
+
+
+[tool.uvicorn]
+factory = false
+host = "0.0.0.0"
+port = 8000
