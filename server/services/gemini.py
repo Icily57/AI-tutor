@@ -4,19 +4,14 @@ import json
 import re
 from dotenv import load_dotenv
 
-load_dotenv()  # ✅ loads GEMINI_API_KEY from .env
+load_dotenv()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-GEMINI_MODEL = "gemini-1.5-flash"  # can adjust to gemini-1.5-pro if needed
-
+GEMINI_MODEL = "gemini-1.5-flash"
 BASE_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
 
 
 async def generate_quiz(topic: str, level: str = "beginner", num_questions: int = 5) -> dict:
-    """
-    Use Gemini to generate a quiz for a given topic and level.
-    Returns structured JSON with questions and answers.
-    """
     if not GEMINI_API_KEY:
         raise ValueError("❌ Missing GEMINI_API_KEY. Please set it in your .env file.")
 
@@ -24,8 +19,8 @@ async def generate_quiz(topic: str, level: str = "beginner", num_questions: int 
     Create a {level} level quiz on the topic: "{topic}".
     The quiz should have {num_questions} multiple-choice questions.
     Each question must include exactly 4 options and 1 correct answer.
-    
-    Format the output as pure JSON (no extra text, no explanations) with this structure:
+
+    Format the output as pure JSON with this structure:
     {{
       "questions": [
         {{
@@ -37,31 +32,40 @@ async def generate_quiz(topic: str, level: str = "beginner", num_questions: int 
     }}
     """
 
-    async with httpx.AsyncClient(timeout=60) as client:
-        response = await client.post(
-            BASE_URL,
-            headers={"Authorization": f"Bearer {GEMINI_API_KEY}"},
-            json={"contents": [{"parts": [{"text": prompt}]}]},
-        )
+    try:
+        async with httpx.AsyncClient(timeout=60) as client:
+            response = await client.post(
+                f"{BASE_URL}?key={GEMINI_API_KEY}",
+                headers={"Content-Type": "application/json"},
+                json={"contents": [{"parts": [{"text": prompt}]}]},
+            )
 
-        if response.status_code != 200:
-            raise RuntimeError(f"Gemini API error {response.status_code}: {response.text}")
+            print("🔍 Gemini HTTP status:", response.status_code)
+            print("🔍 Gemini raw response:", response.text)
 
-        data = response.json()
+            if response.status_code != 200:
+                return {"error": f"Gemini API error {response.status_code}", "details": response.text}
 
-        # Extract text from Gemini response
-        try:
-            text_output = data["candidates"][0]["content"]["parts"][0]["text"]
-        except (KeyError, IndexError):
-            raise RuntimeError("❌ Unexpected Gemini API response format")
+            data = response.json()
 
-        # Clean markdown-style ```json fences if present
-        text_output = re.sub(r"^```(json)?|```$", "", text_output.strip(), flags=re.MULTILINE)
+            # Extract text safely
+            try:
+                text_output = data["candidates"][0]["content"]["parts"][0]["text"]
+            except Exception as e:
+                print("❌ Failed extracting text:", e)
+                return {"error": "Unexpected Gemini API response format", "details": data}
 
-        # Parse JSON safely
-        try:
-            quiz = json.loads(text_output)
-        except json.JSONDecodeError:
-            quiz = {"raw_output": text_output}  # fallback if Gemini output isn't valid JSON
+            # Clean and parse JSON
+            text_output = re.sub(r"^```(json)?|```$", "", text_output.strip(), flags=re.MULTILINE)
 
-        return quiz
+            try:
+                quiz = json.loads(text_output)
+            except json.JSONDecodeError as e:
+                print("⚠️ JSON parse failed:", e)
+                return {"raw_output": text_output, "error": "Invalid JSON format from Gemini"}
+
+            return quiz
+
+    except Exception as e:
+        print("💥 Fatal error in generate_quiz:", str(e))
+        return {"error": str(e)}
