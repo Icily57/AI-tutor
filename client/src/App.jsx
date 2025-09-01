@@ -1,24 +1,49 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import { AuthProvider } from "./auth/AuthContext";
+import ProtectedRoute from "./auth/ProtectedRoute";
 import Home from "./pages/Home";
 import Lessons from "./pages/Lessons";
 import Quizzes from "./pages/Quizzes";
 import Payments from "./pages/Payments";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
-function App() {
+export default function App() {
   return (
-    <BrowserRouter>
-      <Navbar />
-      <div className="container mx-auto">
+    <AuthProvider>
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/lessons" element={<Lessons />} />
-          <Route path="/quizzes" element={<Quizzes />} />
-          <Route path="/payments" element={<Payments />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+
+          {/* Protected pages */}
+          <Route
+            path="/lessons"
+            element={
+              <ProtectedRoute>
+                <Lessons />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/quizzes"
+            element={
+              <ProtectedRoute>
+                <Quizzes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payments"
+            element={
+              <ProtectedRoute>
+                <Payments />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
-      </div>
-    </BrowserRouter>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
-
-export default App;
