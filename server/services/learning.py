@@ -1,17 +1,39 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from app.models import Progress, Lesson
+import os
+import google.generativeai as genai
+from dotenv import load_dotenv
 
+load_dotenv()
 
-async def next_lesson_for_user(db: AsyncSession, user_id: int) -> dict | None:
-	# Very naive baseline: pick any lesson not completed; prefer beginner->advanced order
-	result = await db.execute(select(Lesson).order_by(Lesson.level.asc()))
-	lessons = result.scalars().all()
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-	prog = await db.execute(select(Progress).where(Progress.user_id == user_id))
-	done_ids = {p.lesson_id for p in prog.scalars().all() if p.status == "completed"}
+async def next_lesson_for_user(db, user_id: int, subject: str):
+    """
+    Uses Gemini API to generate the next lesson for the given subject.
+    """
+    model = genai.GenerativeModel("gemini-1.5-flash")  # fast + cheap
+    prompt = f"""
+    You are an AI tutor. Create a short structured beginner-friendly lesson on {subject}.
+    Include:
+    - Lesson title
+    - Level (e.g., Beginner/Intermediate/Advanced)
+    - Content (in a short paragraph)
+    """
 
-	for l in lessons:
-		if l.id not in done_ids:
-			return {"slug": l.slug, "title": l.title, "level": l.level}
-	return None
+    response = model.generate_content(prompt)
+
+    # Safety: Handle if Gemini returns nothing
+    if not response or not response.candidates:
+        return {
+            "title": f"Lesson in {subject}",
+            "level": "Beginner",
+            "content": "Sorry, I couldn't generate a lesson right now."
+        }
+
+    text = response.text
+
+    # Basic structuring (for demo — later we can use JSON formatting)
+    return {
+        "title": f"Introduction to {subject}",
+        "level": "Beginner",
+        "content": text
+    }

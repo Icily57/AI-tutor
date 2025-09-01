@@ -11,6 +11,6 @@ async def get_next_lesson(
     subject: str = Query(..., description="Subject the user wants lessons on"),
     db: AsyncSession = Depends(get_db),
 ):
-    # Pass subject to your service so AI knows what to generate
     lesson = await next_lesson_for_user(db, user_id, subject)
     return {"next_lesson": lesson}
+
