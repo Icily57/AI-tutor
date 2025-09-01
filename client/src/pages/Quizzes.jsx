@@ -4,10 +4,24 @@ import API from "../api/axios";
 export default function Quizzes() {
   const [quiz, setQuiz] = useState(null);
   const [topic, setTopic] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const generateQuiz = async () => {
-    const res = await API.post(`/quizzes/generate?topic=${topic}&level=beginner`);
-    setQuiz(res.data.quiz);
+    if (!topic.trim()) return alert("Please enter a topic!");
+
+    setLoading(true);
+    try {
+      const res = await API.post(`/quizzes/generate`, {
+        topic: topic,
+        level: "beginner",
+      });
+      setQuiz(res.data.quiz);
+    } catch (err) {
+      console.error("Error generating quiz:", err);
+      alert("Failed to generate quiz. Try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -22,9 +36,10 @@ export default function Quizzes() {
       />
       <button
         onClick={generateQuiz}
-        className="px-4 py-2 bg-green-500 text-white rounded"
+        disabled={loading}
+        className="px-4 py-2 bg-green-500 text-white rounded disabled:opacity-50"
       >
-        Generate
+        {loading ? "Generating..." : "Generate"}
       </button>
 
       {quiz && quiz.questions && (
