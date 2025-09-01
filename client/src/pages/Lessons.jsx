@@ -43,7 +43,7 @@ export default function Lessons() {
       {/* Hero Section */} 
      <div className="text-center py-16 px-6 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-b-3xl shadow-lg">
         <h1 className="text-5xl font-extrabold drop-shadow-lg">
-          <BookOpen className="w-10 h-10 text-black" />
+          <BookOpen className="w-10 h-10 text-black animate-bounce" />
           Discover Your Next Lesson ✨
         </h1>
          <p className="mt-4 text-xl max-w-2xl mx-auto">

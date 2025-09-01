@@ -41,15 +41,26 @@ export default function Payments() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-tr from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-8">
-      {/* Header */}
-      <h2 className="text-3xl font-extrabold text-center text-gray-800 dark:text-white mb-8 flex items-center justify-center gap-2">
-        <CreditCard className="w-8 h-8 text-purple-500" />
+    <div className="bg-gradient-to-br from-indigo-50 to-purple-100 min-h-screen">
+      {/* Hero Header */}
+      <div className="text-center py-16 px-6 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-b-3xl shadow-lg">
+        <h3 className="text-5xl font-extrabold drop-shadow-lg">
+          Invest in yourself 📚
+        </h3>
+        <p className="mt-4 text-xl max-w-2xl mx-auto">
+          “Education is the best investment you can make. Every lesson you
+          unlock brings you one step closer to your dreams.”
+        </p>
+      </div>
+
+      {/* Subscription Header */}
+      <h2 className="text-3xl font-extrabold text-center text-black  mt-12 mb-8 flex items-center justify-center gap-2">
+        <CreditCard className="w-8 h-8 text-black" />
         Manage Your Subscription
       </h2>
 
       {/* Plan Details */}
-      <div className="max-w-md mx-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg p-6 text-center mb-8">
+      <div className="max-w-md mx-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg p-6 text-center mb-12">
         <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">
           🌟 SmartTutor Monthly Plan
         </h3>
@@ -99,17 +110,6 @@ export default function Payments() {
         )}
       </div>
 
-      {/* Motivation */}
-      <div className="max-w-2xl mx-auto mb-12 bg-gradient-to-r from-pink-100 via-purple-100 to-blue-100 dark:from-blue-950 dark:via-gray-800 dark:to-gray-900 rounded-2xl shadow p-6 text-center animate-fade-in">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
-          Invest in yourself 📚
-        </h3>
-        <p className="text-gray-700 dark:text-gray-400 italic">
-          “Education is the best investment you can make. Every lesson you
-          unlock brings you one step closer to your dreams.”
-        </p>
-      </div>
-
       {/* Transaction History */}
       <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg p-6">
         <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">
@@ -118,15 +118,9 @@ export default function Payments() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-gray-200 dark:border-gray-700">
-              <th className="py-2 px-3 text-gray-600 dark:text-gray-400">
-                Date
-              </th>
-              <th className="py-2 px-3 text-gray-600 dark:text-gray-400">
-                Amount
-              </th>
-              <th className="py-2 px-3 text-gray-600 dark:text-gray-400">
-                Status
-              </th>
+              <th className="py-2 px-3 text-gray-600 dark:text-gray-400">Date</th>
+              <th className="py-2 px-3 text-gray-600 dark:text-gray-400">Amount</th>
+              <th className="py-2 px-3 text-gray-600 dark:text-gray-400">Status</th>
             </tr>
           </thead>
           <tbody>
