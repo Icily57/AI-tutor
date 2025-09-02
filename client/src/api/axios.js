@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:8000", // your FastAPI backend
+  baseURL: "https://ai-tutor-api-1-ryrc.onrender.com/", // your FastAPI backend
 });
 
 export default API;

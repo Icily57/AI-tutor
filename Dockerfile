@@ -19,5 +19,5 @@ EXPOSE 8080
 
 # Start the app with Uvicorn
 # 👉 Make sure your entry file is app.py and has "app = FastAPI()" or Flask's "app"
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
 
