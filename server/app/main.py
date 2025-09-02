@@ -7,7 +7,7 @@ app = FastAPI(title="AI Tutor with Gemini + IntaSend")
 # CORS for frontend (React at :5173)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["https://ai-tutor-frontend-ten.vercel.app/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
