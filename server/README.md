@@ -1,68 +1,56 @@
-AI Tutor Backend
-This is the backend repository for the AI Tutor web application, a dynamic learning platform that leverages AI to create personalized educational content. This backend serves as the core engine, handling all logic related to AI content generation, user interactions, and payment processing.
+AI Tutor: Backend
+Welcome to the backend repository for AI Tutor, a full-stack AI-powered learning platform.
 
-Features
-AI-Powered Lesson Generation: Uses the Google Gemini API to dynamically create structured, beginner-friendly lessons on various subjects.
+Deployed Link
+You can view the live API here:
+https://ai-tutor-api-1-ryrc.onrender.com/
 
-AI-Powered Quiz Generation: Generates multiple-choice quizzes on any given topic to help users practice and test their knowledge.
+Key Features
+RESTful API: Provides a clean and predictable API for the frontend to consume.
 
-Payment Processing: Integrates with the IntaSend API to handle payment checkouts and subscription management.
+AI Integration: Leverages the Google Gemini API to generate dynamic, tailored lessons and quizzes.
 
-API Endpoints: Provides a robust set of RESTful API endpoints for the frontend, including routes for lessons, quizzes, and payments.
+User Management: Handles user registration and authentication.
 
-Database Integration: Utilizes SQLAlchemy to connect with a database for data persistence.
+Secure Payments: Integrates with IntaSend to manage user subscriptions and payment processing.
+
+Data Persistence: Uses SQLAlchemy for database interactions.
 
 Technical Stack
-Language: Python
+Framework: Python FastAPI
 
-Web Framework: FastAPI
+AI: Google Gemini API
 
-API Integration: Google Gemini API, IntaSend API
+Database: PostgreSQL (with SQLAlchemy)
 
-Database ORM: SQLAlchemy with Asyncio support
+Payments: IntaSend API
 
-HTTP Client: httpx
-
-Environment Management: python-dotenv
+Dependency Management: Pipenv
 
 Getting Started
-To run this backend project locally, follow these steps:
+To run the backend locally, follow these steps:
 
-Clone the repository and navigate to the project directory:
+Clone the repository:
 
-git clone [https://github.com/your-username/ai-tutor-backend.git](https://github.com/your-username/ai-tutor-backend.git)
-cd ai-tutor-backend
+git clone [https://github.com/your-username/ai-tutor.git](https://github.com/your-username/ai-tutor.git)
+cd ai-tutor/backend
 
-Install the dependencies:
-It is recommended to use a virtual environment.
+Set up the environment:
 
-pip install -r requirements.txt
+Create a .env file in the backend directory.
 
-If you don't have a requirements.txt file, you can manually install the required libraries:
-fastapi, uvicorn, python-dotenv, httpx, google-generativeai, pydantic, SQLAlchemy, asyncpg.
+Add your API keys and database URL.
 
-Configure environment variables:
-Create a .env file in the root directory and add the following variables. Replace the placeholder values with your actual keys and URLs.
+GEMINI_API_KEY="your_gemini_api_key"
+INTASEND_SECRET_KEY="your_intasend_secret_key"
+DATABASE_URL="postgresql+asyncpg://user:password@host:port/dbname"
 
-# Gemini API Key
-GEMINI_API_KEY="your_gemini_api_key_here"
+Install dependencies:
 
-# Database URL for SQLAlchemy
-# Example for PostgreSQL: postgresql+asyncpg://user:password@host:5432/dbname
-DATABASE_URL="your_database_url_here"
+pipenv install
 
-# IntaSend API credentials
-INTASEND_SECRET_KEY="your_intasend_secret_key_here"
-INTASEND_ENV="sandbox" # or "live" for production
+Run the development server:
 
-# URL of your frontend application
-APP_URL="http://localhost:5173"
+pipenv run start
 
-Run the server:
-
-uvicorn main:app --reload
-
-The API should now be running at http://127.0.0.1:8000. You can access the interactive API documentation at http://127.0.0.1:8000/docs.
-
-Contribution
-Contributions are welcome! If you have suggestions for new features, bug fixes, or improvements, please feel free to open a pull request.
+The API will be available at http://localhost:8000.
