@@ -6,14 +6,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-GEMINI_MODEL = "gemini-1.5-flash"
-BASE_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+DEEPSEEK_MODEL = "deepseek-chat"
+BASE_URL = "https://api.deepseek.com/v1/chat/completions"
 
 
 async def generate_quiz(topic: str, level: str = "beginner", num_questions: int = 5) -> dict:
-    if not GEMINI_API_KEY:
-        raise ValueError("❌ Missing GEMINI_API_KEY. Please set it in your .env file.")
+    if not DEEPSEEK_API_KEY:
+        raise ValueError("❌ Missing DEEPSEEK_API_KEY. Please set it in your .env file.")
 
     prompt = f"""
     Create a {level} level quiz on the topic: "{topic}".
@@ -35,25 +35,32 @@ async def generate_quiz(topic: str, level: str = "beginner", num_questions: int 
     try:
         async with httpx.AsyncClient(timeout=60) as client:
             response = await client.post(
-                f"{BASE_URL}?key={GEMINI_API_KEY}",
-                headers={"Content-Type": "application/json"},
-                json={"contents": [{"parts": [{"text": prompt}]}]},
+                BASE_URL,
+                headers={
+                    "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": DEEPSEEK_MODEL,
+                    "messages": [{"role": "user", "content": prompt}],
+                    "temperature": 0.7
+                },
             )
 
-            print("🔍 Gemini HTTP status:", response.status_code)
-            print("🔍 Gemini raw response:", response.text)
+            print("🔍 DeepSeek HTTP status:", response.status_code)
+            print("🔍 DeepSeek raw response:", response.text)
 
             if response.status_code != 200:
-                return {"error": f"Gemini API error {response.status_code}", "details": response.text}
+                return {"error": f"DeepSeek API error {response.status_code}", "details": response.text}
 
             data = response.json()
 
             # Extract text safely
             try:
-                text_output = data["candidates"][0]["content"]["parts"][0]["text"]
+                text_output = data["choices"][0]["message"]["content"]
             except Exception as e:
                 print("❌ Failed extracting text:", e)
-                return {"error": "Unexpected Gemini API response format", "details": data}
+                return {"error": "Unexpected DeepSeek API response format", "details": data}
 
             # Clean and parse JSON
             text_output = re.sub(r"^```(json)?|```$", "", text_output.strip(), flags=re.MULTILINE)
@@ -62,7 +69,7 @@ async def generate_quiz(topic: str, level: str = "beginner", num_questions: int 
                 quiz = json.loads(text_output)
             except json.JSONDecodeError as e:
                 print("⚠️ JSON parse failed:", e)
-                return {"raw_output": text_output, "error": "Invalid JSON format from Gemini"}
+                return {"raw_output": text_output, "error": "Invalid JSON format from DeepSeek"}
 
             return quiz
 
